@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Moon-Dungeon.sln"
+    "dotnet.defaultSolution": "Moon-Dungeon.slnx"
 }
