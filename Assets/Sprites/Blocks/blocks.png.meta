@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 4f7a6321efdac9d4c9e3b45f8a4a43f2
+guid: 4f5f63ff666864a478d766e69a7668a5
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -97,11 +97,11 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: SpaceShooterAssetPack_Ships_0
+      name: blocks_0
       rect:
         serializedVersion: 2
-        x: 8
-        y: 72
+        x: 0
+        y: 8
         width: 8
         height: 8
       alignment: 0
@@ -111,19 +111,19 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a27931a6b92d1474b994f5604557b6b8
-      internalID: 821565746
+      spriteID: 3bd585520afd67845a6d939a394418c8
+      internalID: 1114456453
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SpaceShooterAssetPack_Ships_1
+      name: blocks_1
       rect:
         serializedVersion: 2
-        x: 18
-        y: 72
-        width: 6
+        x: 8
+        y: 8
+        width: 8
         height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -132,19 +132,61 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f1f4708932dc15e47bc436213e4508d9
-      internalID: -1651747720
+      spriteID: 22b2bb7a73cc8e14590949b36b3392bc
+      internalID: 1705055674
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: SpaceShooterAssetPack_Ships_2
+      name: blocks_2
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 8
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1ee7dfca33c0d1a4ab4656ce855b5feb
+      internalID: 2090835348
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blocks_3
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 8
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4dddef4f0352b840a6846340ab4760e
+      internalID: 2098777057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blocks_4
       rect:
         serializedVersion: 2
         x: 0
-        y: 72
-        width: 6
+        y: 0
+        width: 8
         height: 8
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -153,8 +195,71 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 48a0e0cbd9579f946bbabdc88c1663cb
-      internalID: 71804559
+      spriteID: 648c43b6cc0cc004e9271009f18029fa
+      internalID: 1815031787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blocks_5
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3189ab456213abe4081c3c876aff0386
+      internalID: 1094206303
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blocks_6
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 344b74274be2ea44fb2e746036c935dd
+      internalID: 799649547
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: blocks_7
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 0
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 78873f76403b0334e853efae77d1c09f
+      internalID: -1363592242
       vertices: []
       indices: 
       edges: []
@@ -170,9 +275,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      SpaceShooterAssetPack_Ships_0: 821565746
-      SpaceShooterAssetPack_Ships_1: -1651747720
-      SpaceShooterAssetPack_Ships_2: 71804559
+      blocks_0: 1114456453
+      blocks_1: 1705055674
+      blocks_2: 2090835348
+      blocks_3: 2098777057
+      blocks_4: 1815031787
+      blocks_5: 1094206303
+      blocks_6: 799649547
+      blocks_7: -1363592242
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

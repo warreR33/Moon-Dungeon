@@ -41,6 +41,8 @@ public class ShipController : MonoBehaviour
 
         velocity = Vector2.ClampMagnitude(velocity, maxSpeed);
         transform.position += (Vector3)velocity * Time.deltaTime;
+
+        ClampToCamera();
     }
 
     private void HandleRotation()
@@ -63,4 +65,17 @@ public class ShipController : MonoBehaviour
         // Pasamos el valor al Animator
         animator.SetFloat("Tilt", tilt);
     }
+
+    private void ClampToCamera()
+    {
+        Vector3 pos = transform.position;
+        Vector3 viewPos = Camera.main.WorldToViewportPoint(pos);
+
+        // Limitar dentro del viewport (0-1)
+        viewPos.x = Mathf.Clamp(viewPos.x, 0.05f, 0.95f);
+        viewPos.y = Mathf.Clamp(viewPos.y, 0.05f, 0.95f);
+
+        transform.position = Camera.main.ViewportToWorldPoint(viewPos);
+    }
+
 }
