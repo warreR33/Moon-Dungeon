@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockName: DirtBlock
   sprite: {fileID: 1815031787, guid: 4f5f63ff666864a478d766e69a7668a5, type: 3}
-  life: 2
+  life: 4
   reward: 5
   spawnEnemyOnDestroy: 0

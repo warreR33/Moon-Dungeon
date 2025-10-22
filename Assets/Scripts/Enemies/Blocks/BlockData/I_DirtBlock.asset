@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b06b39692e385c541b60e8fc2a372964, type: 3}
   m_Name: I_DirtBlock
   m_EditorClassIdentifier: 
-  blockName: 
-  sprite: {fileID: 0}
-  life: 3
-  reward: 10
-  spawnEnemyOnDestroy: 0
+  blockName: I_DirtBlock
+  sprite: {fileID: 1114456453, guid: 4f5f63ff666864a478d766e69a7668a5, type: 3}
+  life: 5
+  reward: 8
+  spawnEnemyOnDestroy: 1
