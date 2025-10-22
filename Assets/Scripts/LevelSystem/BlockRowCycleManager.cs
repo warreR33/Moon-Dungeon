@@ -13,7 +13,6 @@ public class BlockRowCycleManager : MonoBehaviour
     [SerializeField] private float timeBetweenRows = 3f;  // Tiempo entre la aparición de cada fila
 
     private List<Transform> activeRows = new List<Transform>();
-    private bool isSpawning = false;
 
     private void Start()
     {

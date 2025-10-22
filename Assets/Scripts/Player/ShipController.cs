@@ -11,10 +11,8 @@ public class ShipController : MonoBehaviour
 
     private Vector2 velocity;
     private Vector2 input;
-
-    private ShipView view;
     private Camera mainCamera;
-
+    private ShipView view;
 
     [Header("Vida")]
     [SerializeField] private int maxHealth = 5;
@@ -23,12 +21,23 @@ public class ShipController : MonoBehaviour
 
     [SerializeField] private ShipUI uiManager;
 
+    [Header("Daño por borde")]
+    [SerializeField] private int borderDamage = 1;
+    [SerializeField] private float boundaryReleaseDistance = 0.02f;
+
+    private BoundaryArea lastBoundaryTouched = null;
+    private bool isTouchingBoundary = false;
+    private float borderDamageTimer = 0f;
+
+    // ---------------------------------------------------------
+    // Ciclo de vida
+    // ---------------------------------------------------------
     private void Awake()
     {
         view = GetComponent<ShipView>();
         mainCamera = Camera.main;
-        currentHealth = maxHealth;
 
+        currentHealth = maxHealth;
         uiManager?.InitHealth(maxHealth);
         uiManager?.UpdateHealth(currentHealth);
     }
@@ -37,15 +46,20 @@ public class ShipController : MonoBehaviour
     {
         HandleMovement();
         HandleRotation();
+
+        if (borderDamageTimer > 0f)
+            borderDamageTimer -= Time.deltaTime;
     }
 
+    // ---------------------------------------------------------
+    // Movimiento y rotación
+    // ---------------------------------------------------------
     private void HandleMovement()
     {
-        float inputX = Input.GetAxisRaw("Horizontal");
-        float inputY = Input.GetAxisRaw("Vertical");
-        input = new Vector2(inputX, inputY).normalized;
+        // Input
+        input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
 
-        // Movimiento con aceleración
+        // Movimiento básico
         if (input.magnitude > 0)
             velocity += input * acceleration * Time.deltaTime;
         else
@@ -54,9 +68,13 @@ public class ShipController : MonoBehaviour
         velocity = Vector2.ClampMagnitude(velocity, maxSpeed);
         transform.position += (Vector3)velocity * Time.deltaTime;
 
+        // Comprobación de límites
+        HandleBoundaryCollision();
+
+        // Mantener dentro de cámara
         ClampToCamera();
 
-        // Animaciones de la vista
+        // Actualizar animaciones
         view.UpdateThrustAnimation(input.magnitude > 0);
         view.UpdateTiltAnimation(input, transform);
     }
@@ -84,14 +102,60 @@ public class ShipController : MonoBehaviour
         transform.position = mainCamera.ViewportToWorldPoint(viewPos);
     }
 
+    // ---------------------------------------------------------
+    // Colisión con bordes
+    // ---------------------------------------------------------
+    private void HandleBoundaryCollision()
+    {
+        if (BoundaryManager.Instance == null) return;
 
+        Vector2 pos = transform.position;
+        Vector2 vel = velocity;
+
+        // Ajuste de posición
+        Vector2 corrected = BoundaryManager.Instance.GetCorrectedPosition(pos, ref vel);
+        transform.position = corrected;
+        velocity = vel;
+
+        // Detección de borde
+        BoundaryArea touchedBoundary = BoundaryManager.Instance.GetBoundaryAtPosition(pos);
+
+        if (touchedBoundary != null)
+        {
+            if (!isTouchingBoundary || touchedBoundary != lastBoundaryTouched)
+            {
+                TakeDamage(borderDamage);
+                lastBoundaryTouched = touchedBoundary;
+                isTouchingBoundary = true;
+            }
+        }
+        else if (isTouchingBoundary)
+        {
+            if (lastBoundaryTouched != null)
+            {
+                float dist = Vector2.Distance(pos, lastBoundaryTouched.transform.position);
+                if (dist > boundaryReleaseDistance)
+                {
+                    isTouchingBoundary = false;
+                    lastBoundaryTouched = null;
+                }
+            }
+            else
+            {
+                isTouchingBoundary = false;
+            }
+        }
+    }
+
+    // ---------------------------------------------------------
+    // Daño y vida
+    // ---------------------------------------------------------
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
-        
-        // Aquí podríamos actualizar la UI de vida
-        if (uiManager != null)
-            uiManager.UpdateHealth(currentHealth);
+
+        uiManager?.UpdateHealth(currentHealth);
+        view.PlayDamageFlash();
     }
 }

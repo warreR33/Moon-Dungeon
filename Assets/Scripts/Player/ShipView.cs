@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class ShipView : MonoBehaviour
 {
+    [Header("Animators")]
     [SerializeField] private Animator shipAnimator;
     [SerializeField] private Animator enginesAnimator;
 
@@ -23,7 +24,13 @@ public class ShipView : MonoBehaviour
 
     public void PlayShootAnimation()
     {
+        // if (shipAnimator != null)
+        //     shipAnimator.SetTrigger("Shoot");
+    }
+
+    public void PlayDamageFlash()
+    {
         if (shipAnimator != null)
-            shipAnimator.SetTrigger("Shoot");
+            shipAnimator.SetTrigger("Damage");
     }
 }
