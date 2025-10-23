@@ -7,17 +7,19 @@ TagManager:
   - Bullet
   - Impact
   - BlockDestruction
+  - Boundary
+  - Block
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Player
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
+  - Ship
+  - Boundary
+  - Block
+  - Bullet
   - 
   - 
   - 

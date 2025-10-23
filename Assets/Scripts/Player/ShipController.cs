@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(ShipView))]
-public class ShipController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
     [Header("Movimiento")]
     [SerializeField] private float acceleration = 10f;
@@ -15,22 +15,18 @@ public class ShipController : MonoBehaviour
     private ShipView view;
 
     [Header("Vida")]
-    [SerializeField] private int maxHealth = 5;
+    [SerializeField] private int maxHealth = 100;
     private int currentHealth;
-    public int CurrentHealth => currentHealth;
 
-    [SerializeField] private ShipUI uiManager;
+    [Header("Colisión")]
+    [SerializeField] private int collisionDamage = 10;
+    [SerializeField] private float collisionCooldown = 1f;
 
-    [Header("Daño por borde")]
-    [SerializeField] private int borderDamage = 1;
-    [SerializeField] private float boundaryReleaseDistance = 0.02f;
-
-    private BoundaryArea lastBoundaryTouched = null;
-    private bool isTouchingBoundary = false;
-    private float borderDamageTimer = 0f;
+    private float lastCollisionTime;
+    private string lastColliderName;
 
     // ---------------------------------------------------------
-    // Ciclo de vida
+    // Inicialización
     // ---------------------------------------------------------
     private void Awake()
     {
@@ -38,17 +34,12 @@ public class ShipController : MonoBehaviour
         mainCamera = Camera.main;
 
         currentHealth = maxHealth;
-        uiManager?.InitHealth(maxHealth);
-        uiManager?.UpdateHealth(currentHealth);
     }
 
     private void Update()
     {
         HandleMovement();
         HandleRotation();
-
-        if (borderDamageTimer > 0f)
-            borderDamageTimer -= Time.deltaTime;
     }
 
     // ---------------------------------------------------------
@@ -59,7 +50,7 @@ public class ShipController : MonoBehaviour
         // Input
         input = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")).normalized;
 
-        // Movimiento básico
+        // Movimiento
         if (input.magnitude > 0)
             velocity += input * acceleration * Time.deltaTime;
         else
@@ -67,12 +58,6 @@ public class ShipController : MonoBehaviour
 
         velocity = Vector2.ClampMagnitude(velocity, maxSpeed);
         transform.position += (Vector3)velocity * Time.deltaTime;
-
-        // Comprobación de límites
-        HandleBoundaryCollision();
-
-        // Mantener dentro de cámara
-        ClampToCamera();
 
         // Actualizar animaciones
         view.UpdateThrustAnimation(input.magnitude > 0);
@@ -84,78 +69,45 @@ public class ShipController : MonoBehaviour
         if (mainCamera == null) return;
 
         Vector3 mousePos = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-        Vector2 direction = (mousePos - transform.position);
+        Vector2 direction = mousePos - transform.position;
         float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
 
         Quaternion targetRotation = Quaternion.Euler(0, 0, angle - 90f);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
 
-    private void ClampToCamera()
-    {
-        Vector3 pos = transform.position;
-        Vector3 viewPos = mainCamera.WorldToViewportPoint(pos);
-
-        viewPos.x = Mathf.Clamp(viewPos.x, 0.05f, 0.95f);
-        viewPos.y = Mathf.Clamp(viewPos.y, 0.05f, 0.95f);
-
-        transform.position = mainCamera.ViewportToWorldPoint(viewPos);
-    }
-
     // ---------------------------------------------------------
-    // Colisión con bordes
+    // Colisiones
     // ---------------------------------------------------------
-    private void HandleBoundaryCollision()
+    private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (BoundaryManager.Instance == null) return;
-
-        Vector2 pos = transform.position;
-        Vector2 vel = velocity;
-
-        // Ajuste de posición
-        Vector2 corrected = BoundaryManager.Instance.GetCorrectedPosition(pos, ref vel);
-        transform.position = corrected;
-        velocity = vel;
-
-        // Detección de borde
-        BoundaryArea touchedBoundary = BoundaryManager.Instance.GetBoundaryAtPosition(pos);
-
-        if (touchedBoundary != null)
+        if (collision.collider.TryGetComponent(out Boundary boundary))
         {
-            if (!isTouchingBoundary || touchedBoundary != lastBoundaryTouched)
-            {
-                TakeDamage(borderDamage);
-                lastBoundaryTouched = touchedBoundary;
-                isTouchingBoundary = true;
-            }
+            TryTakeCollisionDamage(boundary.name);
         }
-        else if (isTouchingBoundary)
+        else if (collision.collider.TryGetComponent(out Block block))
         {
-            if (lastBoundaryTouched != null)
-            {
-                float dist = Vector2.Distance(pos, lastBoundaryTouched.transform.position);
-                if (dist > boundaryReleaseDistance)
-                {
-                    isTouchingBoundary = false;
-                    lastBoundaryTouched = null;
-                }
-            }
-            else
-            {
-                isTouchingBoundary = false;
-            }
+            TryTakeCollisionDamage(block.name);
         }
     }
 
-    // ---------------------------------------------------------
-    // Daño y vida
-    // ---------------------------------------------------------
-    public void TakeDamage(int amount)
+    private void TryTakeCollisionDamage(string sourceName)
+    {
+        if (sourceName == lastColliderName && Time.time - lastCollisionTime < collisionCooldown)
+            return;
+
+        TakeDamage(collisionDamage);
+
+        lastColliderName = sourceName;
+        lastCollisionTime = Time.time;
+    }
+
+    private void TakeDamage(int amount)
     {
         currentHealth -= amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
 
-        uiManager?.UpdateHealth(currentHealth);
+        Debug.Log($"Nave recibe {amount} de daño. Vida actual: {currentHealth}");
         view.PlayDamageFlash();
     }
 }
