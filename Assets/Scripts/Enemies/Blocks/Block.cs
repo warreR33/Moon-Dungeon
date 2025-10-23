@@ -1,10 +1,12 @@
 using UnityEngine;
-using UnityEngine.UI; // si usás imágenes UI, si no, podés borrar esto
 
 public class Block : MonoBehaviour
 {
     [Header("Datos")]
     public BlockData data;
+
+    [Header("Efectos")]
+    [SerializeField] private string destructionEffectKey = "BlockDestruction";
 
     private int currentLife;
     private SpriteRenderer spriteRenderer;
@@ -17,15 +19,12 @@ public class Block : MonoBehaviour
     void Start()
     {
         if (data != null)
-        {
             InitializeFromData(data);
-        }
     }
 
     public void InitializeFromData(BlockData blockData)
     {
         data = blockData;
-
         currentLife = data.life;
 
         if (spriteRenderer != null && data.sprite != null)
@@ -37,22 +36,34 @@ public class Block : MonoBehaviour
         currentLife -= amount;
 
         if (currentLife <= 0)
-        {
             OnDestroyed();
-        }
     }
 
     private void OnDestroyed()
     {
-        // Recompensa
         Debug.Log($"Bloque destruido: {data.blockName} +{data.reward} puntos");
 
-        // Spawn enemigo si corresponde (lo implementaremos más adelante)
         if (data.spawnEnemyOnDestroy)
-        {
             Debug.Log($"El bloque {data.blockName} genera un enemigo.");
+
+        // 🔥 Efecto de destrucción
+        if (ObjectPool.Instance != null)
+        {
+            ObjectPool.Instance.SpawnFromPool(
+                destructionEffectKey,
+                transform.position,
+                Quaternion.identity
+            );
         }
 
-        Destroy(gameObject);
+        // ♻️ Devolver o destruir el bloque
+        if (ObjectPool.Instance != null)
+        {
+            ObjectPool.Instance.ReturnToPool(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 }

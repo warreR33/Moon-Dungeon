@@ -68,15 +68,19 @@ public class ShipWeapon : MonoBehaviour
     {
         if (equippedWeapon.bulletPrefab == null || firePoint == null) return;
 
-        GameObject bullet = Instantiate(equippedWeapon.bulletPrefab, firePoint.position, firePoint.rotation);
-        bullet.GetComponent<Bullet>().SetDamage(equippedWeapon.damage);
+        // Suponiendo que el prefab tiene un nombre que coincide con el tag en el pool
+        string poolTag = equippedWeapon.bulletPrefab.name;
 
+        GameObject bulletGO = ObjectPool.Instance.SpawnFromPool(poolTag, firePoint.position, firePoint.rotation);
+
+        Bullet bullet = bulletGO.GetComponent<Bullet>();
+        if (bullet != null)
+            bullet.SetDamage(equippedWeapon.damage);
 
         fireTimer = equippedWeapon.fireRate;
         currentAmmo--;
 
         ui?.UpdateBullets(currentAmmo, totalAmmo);
-
         shipView?.PlayShootAnimation();
     }
 
