@@ -18,19 +18,18 @@ public class ShipView : MonoBehaviour
 
         Vector2 localInput = shipTransform.InverseTransformDirection(input);
         float tilt = Mathf.Clamp(localInput.x, -1f, 1f);
-
         shipAnimator.SetFloat("Tilt", tilt);
-    }
-
-    public void PlayShootAnimation()
-    {
-        // if (shipAnimator != null)
-        //     shipAnimator.SetTrigger("Shoot");
     }
 
     public void PlayDamageFlash()
     {
         if (shipAnimator != null)
             shipAnimator.SetTrigger("Damage");
+    }
+
+    public void PlayShootAnimation()
+    {
+        if (shipAnimator != null)
+            shipAnimator.SetTrigger("Shoot");
     }
 }

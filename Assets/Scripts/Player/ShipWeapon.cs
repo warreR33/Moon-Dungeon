@@ -17,6 +17,22 @@ public class ShipWeapon : MonoBehaviour
     private float fireTimer;
     private bool isReloading;
 
+
+    public void Initialize(ShipView view, ShipUI ui)
+    {
+        shipView = view;
+        this.ui = ui;
+
+        if (equippedWeapon != null)
+            InitializeWeapon(equippedWeapon);
+
+        if (ui != null)
+        {
+            ui.InitBullets(equippedWeapon.magazineSize);
+            ui.UpdateBullets(currentAmmo, totalAmmo);
+        }
+    }
+
     private void Start()
     {
         if (equippedWeapon != null)
@@ -67,8 +83,6 @@ public class ShipWeapon : MonoBehaviour
     private void Shoot()
     {
         if (equippedWeapon.bulletPrefab == null || firePoint == null) return;
-
-        // Suponiendo que el prefab tiene un nombre que coincide con el tag en el pool
         string poolTag = equippedWeapon.bulletPrefab.name;
 
         GameObject bulletGO = ObjectPool.Instance.SpawnFromPool(poolTag, firePoint.position, firePoint.rotation);
