@@ -9,14 +9,12 @@ public class ShipWeapon : MonoBehaviour
     [Header("Referencias")]
     [SerializeField] private Transform firePoint;
     [SerializeField] private ShipView shipView;
-
     [SerializeField] private ShipUI ui;
 
     private int currentAmmo;
     private int totalAmmo;
     private float fireTimer;
     private bool isReloading;
-
 
     public void Initialize(ShipView view, ShipUI ui)
     {
@@ -33,28 +31,13 @@ public class ShipWeapon : MonoBehaviour
         }
     }
 
-    private void Start()
-    {
-        if (equippedWeapon != null)
-            InitializeWeapon(equippedWeapon);
-
-        if (ui != null)
-        {
-            ui.InitBullets(equippedWeapon.magazineSize);
-            ui.UpdateBullets(currentAmmo, totalAmmo);
-        }
-    }
-
     private void Update()
     {
         if (equippedWeapon == null) return;
 
         fireTimer -= Time.deltaTime;
 
-        if (Input.GetMouseButtonDown(0))
-            TryShoot();
-
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0) || Input.GetMouseButton(0))
             TryShoot();
     }
 
@@ -119,13 +102,11 @@ public class ShipWeapon : MonoBehaviour
         ui?.UpdateReloadBar(0f);
     }
 
-    // 🔹 Permite cambiar de arma dinámicamente
     public void EquipWeapon(WeaponData newWeapon)
     {
         InitializeWeapon(newWeapon);
     }
 
-    // 🔹 Información pública (útil para UI)
     public int CurrentAmmo => currentAmmo;
     public int TotalAmmo => totalAmmo;
     public WeaponData EquippedWeapon => equippedWeapon;

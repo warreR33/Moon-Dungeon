@@ -30,6 +30,9 @@ public class ShipView : MonoBehaviour
     public void PlayShootAnimation()
     {
         if (shipAnimator != null)
-            shipAnimator.SetTrigger("Shoot");
+        {
+            //shipAnimator.SetTrigger("Shoot");
+        }
+            
     }
 }

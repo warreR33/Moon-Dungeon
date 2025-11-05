@@ -45,16 +45,42 @@ public class ObjectPool : MonoBehaviour
             return null;
         }
 
-        GameObject obj = poolDictionary[tag].Dequeue();
+        Queue<GameObject> objectPool = poolDictionary[tag];
+
+        GameObject obj = null;
+
+        // Buscamos un objeto inactivo disponible
+        foreach (var pooledObj in objectPool)
+        {
+            if (!pooledObj.activeInHierarchy)
+            {
+                obj = pooledObj;
+                break;
+            }
+        }
+
+        // Si no hay disponibles, instanciamos uno nuevo
+        if (obj == null)
+        {
+            Pool poolData = pools.Find(p => p.tag == tag);
+            if (poolData == null)
+            {
+                Debug.LogWarning($"No pool data found for tag {tag}");
+                return null;
+            }
+
+            obj = Instantiate(poolData.prefab);
+            obj.transform.SetParent(transform);
+            objectPool.Enqueue(obj);
+        }
+
         obj.SetActive(true);
         obj.transform.position = position;
         obj.transform.rotation = rotation;
 
-        // NO ENCOLAR AQUÍ
-        // poolDictionary[tag].Enqueue(obj);
-
         return obj;
     }
+
 
     public void ReturnToPool(GameObject obj)
     {

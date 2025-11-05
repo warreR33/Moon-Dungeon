@@ -43,10 +43,12 @@ public class Block : MonoBehaviour
     {
         Debug.Log($"Bloque destruido: {data.blockName} +{data.reward} puntos");
 
+        if (GameManager.Instance != null)
+            GameManager.Instance.AddScore(data.reward);
+
         if (data.spawnEnemyOnDestroy)
             Debug.Log($"El bloque {data.blockName} genera un enemigo.");
 
-        // 🔥 Efecto de destrucción
         if (ObjectPool.Instance != null)
         {
             ObjectPool.Instance.SpawnFromPool(
@@ -54,11 +56,7 @@ public class Block : MonoBehaviour
                 transform.position,
                 Quaternion.identity
             );
-        }
 
-        // ♻️ Devolver o destruir el bloque
-        if (ObjectPool.Instance != null)
-        {
             ObjectPool.Instance.ReturnToPool(gameObject);
         }
         else
